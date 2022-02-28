@@ -3,16 +3,18 @@ require('chai')
     .should()
 
 const {assert} = require('chai')
-const { MerkleTree } = require('./helper/merkleTree.js');
+const { MerkleTree } = require('./Merkle/merkleTree.js');
+const {Server} = require('./HoldToken/server.js')
 const NFT = artifacts.require('./GoodNft.sol')
-const holdTokenABI = require('./HoldToken/abi.json')
 contract('NFT contract', (accounts) => {
     let res
     let nft
     let adminMintWallets = [accounts[1], accounts[2], accounts[3]]
     let adminMintAmounts = [3, 4, 5]
-    const holdTokenAddr = "0x41a70a616a35cbfa00cc0319748f281396366736"
-    let holdToken
+
+    let starHolder_1 = "0x8090dd2831092d07c013e8252cd7a19f9149e2ea"
+    let starHolder_2 = "0xa784779bd895b2db4c0009a7468f090012e12ff9"
+    let starHolder_3 = "0x7c2845d6b48cb2feb76532558e2033c145745e35"
     before(async() => {
         nft = await NFT.deployed()
     })
@@ -58,7 +60,9 @@ contract('NFT contract', (accounts) => {
     // })
 
     it('Holder mint', async() => {
-        holdToken = new web3.eth.Contract(holdTokenABI, holdTokenAddr)
+        // res = await nft._checkStarOwner(starHolder_1, 961)
+        // console.log(res)
+        await nft.holderMint([961, 960, 959, 958], {from: starHolder_1})
     })
 
     // it('set base uri', async() => {
