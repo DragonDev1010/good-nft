@@ -4,7 +4,7 @@ pragma solidity 0.8.6;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import '@openzeppelin/contracts/access/Ownable.sol';
 
-contract Auction {
+contract DutchAuction is Ownable {
     IERC721 public nft;
     
     struct Auction {
@@ -29,7 +29,7 @@ contract Auction {
 
     function setAuction(uint256 id, uint256 price, uint256 interval) public onlyOwner {
         require(nft.ownerOf(id) == address(this), '');
-        require(auctions[id].price == 0, '');
+        require(auctions[id].startPrice == 0, '');
         auctions[id] = Auction({
             startPrice: price,
             creator: msg.sender,
@@ -40,8 +40,8 @@ contract Auction {
 
     function bid(uint256 id, uint256 price) public payable{
         require(nft.ownerOf(id) == address(this), "");
-        require(auctions[id].price == 0, '');
-        require(price > bids(id).price, "");
+        require(auctions[id].startPrice == 0, '');
+        require(price > bids[id].price, "");
         
     }
 
