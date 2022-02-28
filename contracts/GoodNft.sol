@@ -11,16 +11,26 @@ contract GoodNft is ERC721, Ownable{
 
 	uint256 public mintStage;
 
+	uint256 public presalePrice = 0.042 ether;
+	uint256 public maxSupply = 10000;
 	uint256 public totalSupply;
 	mapping(uint256 => uint256) starCompMap;
 	mapping(uint256 => bool) usedStar;
 
 	bytes32 private influencerRoot;
-	bytes32 private whitelistRoot;
+
+	bytes32 private whitelistRoot_1;
+	bytes32 private whitelistRoot_2;
+	bytes32 private whitelistRoot_3;
+
+	address public auctionAddress;
 
 	constructor(string memory name, string memory symbol, address starAddr) ERC721(name, symbol) {
 		star = IERC721(starAddr);
 	}
+
+	receive() external payable {}
+	
 
 	function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
@@ -71,14 +81,44 @@ contract GoodNft is ERC721, Ownable{
 		totalSupply += amount;
 	}
 
-	function whitelistMint(uint256 amount, bytes32[] memory proof) public {
+	function whitelistMint(uint256 amount, bytes32[] memory proof, uint256 level) public payable {
 		require(amount > 0, "Whitelist Mint : Mint amount has to be greater than zero.");
-		require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist.");
+		require(totalSupply < maxSupply, "Whitelist Mint : Already all 10K NFTs are minted.");
 		require(mintStage == 3, "Whitelist Mint : Mint stage has to set as Whitelist Mint Stage.");
-		require(amount < 4, "Whitelist Mint : Maximum mint amount is 3 for Whitelist.");
-		for (uint256 i = 0 ; i < amount ; i++) 
-			_safeMint(msg.sender, totalSupply+i);
-		totalSupply += amount;
+
+		require(level > 0, "whitelistMint : Whitelist level has to be greater than zero.");
+		require(level < 4, "whitelistMint : Whitelist level is from 1 to 3.");
+		if(level == 1) {
+			require(amount == 1, "Whitelist Mint : Whitelist Level-1 can mint only 1 NFT.");	
+			require(msg.value == presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 1 NFT.");
+			require(verifyWhitelist(proof, 1), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 1.");
+			
+			_safeMint(msg.sender, totalSupply);
+			totalSupply = totalSupply + 1;
+		} else if (level == 2) {
+			require(amount == 2, "Whitelist Mint : Whitelist Level-2 can mint only 2 NFT.");
+			require(msg.value == 2 * presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 2 NFT.");
+			require(verifyWhitelist(proof, 2), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 2.");	
+			
+			for (uint256 i = 0 ; i < 2 ; i++) 
+				_safeMint(msg.sender, totalSupply+i);
+			totalSupply += 2;
+		} else {
+			require(amount == 3, "Whitelist Mint : Whitelist Level-3 can mint only 3 NFT.");
+			require(msg.value == 3 * presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 3 NFT.");
+			require(verifyWhitelist(proof, 3), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 3.");	
+			
+			for (uint256 i = 0 ; i < 3 ; i++) 
+				_safeMint(msg.sender, totalSupply+i);
+			totalSupply += 3;
+		}
+	}
+
+	function publicSale() public onlyOwner{
+		require(totalSupply < maxSupply, "Public Sale : Already all 10K NFTs are minted.");
+		require(mintStage == 4, "Public Sale : Mint stage has to set as public sale Stage.");
+		for(uint256 i = totalSupply ; i < maxSupply ; i++)
+			_safeMint(auctionAddress, totalSupply+i);
 	}
 
 	function _checkStarOwner(address minter, uint256 id) private view returns(bool) {
@@ -101,12 +141,32 @@ contract GoodNft is ERC721, Ownable{
 		return MerkleProof.verify(proof, influencerRoot, leaf);
 	}
 
-	function setWhitelistRoot(bytes32 root_) public onlyOwner {
-		whitelistRoot = root_;
+	function setWhitelistRoot(bytes32 root_, uint256 level) public onlyOwner {
+		require(level < 4, "setWhitelistRoot : There are only 3 levels.");
+		require(level > 0, "setWhitelistRoot : Whitelist Level is from 1 to 3.");
+		if(level == 1) 
+			whitelistRoot_1 = root_;
+		else if (level == 2)
+			whitelistRoot_2 = root_;
+		else
+			whitelistRoot_3 = root_;
 	}
 
-	function verifyWhitelist(bytes32[] memory proof) public view returns(bool) {
+	function verifyWhitelist(bytes32[] memory proof, uint256 level) public view returns(bool) {
+		require(level < 4, "setWhitelistRoot : There are only 3 levels.");
+		require(level > 0, "setWhitelistRoot : Whitelist Level is from 1 to 3.");
+		
 		bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
-		return MerkleProof.verify(proof, whitelistRoot, leaf);
+
+		if(level == 1) 
+			return MerkleProof.verify(proof, whitelistRoot_1, leaf);
+		else if (level == 2)
+			return MerkleProof.verify(proof, whitelistRoot_2, leaf);
+		else
+			return MerkleProof.verify(proof, whitelistRoot_3, leaf);
+	}
+
+	function setAuctionAddress(address auction_) public onlyOwner {
+		auctionAddress = auction_;
 	}
 }
