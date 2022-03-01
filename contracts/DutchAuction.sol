@@ -9,17 +9,13 @@ contract DutchAuction is Ownable {
     
     struct Auction {
         uint256 startPrice;
-        address creator;
         uint256 interval;
+        uint256 discountRate;
         uint256 created;
+        uint256 ended;
     }
 
     mapping(uint256 => Auction) public auctions;
-
-    struct HighestBid {
-        uint256 price;
-        address bidder;
-    }
 
     mapping(uint256 => HighestBid) public bids;
 
@@ -27,25 +23,31 @@ contract DutchAuction is Ownable {
         nft = IERC721(nftAddr_);
     }
 
-    function setAuction(uint256 id, uint256 price, uint256 interval) public onlyOwner {
+    function setAuction(uint256 id, uint256 price, uint256 interval, uint256 discountRate) public onlyOwner {
         require(nft.ownerOf(id) == address(this), '');
-        require(auctions[id].startPrice == 0, '');
+        uint256 endedTime = block.timestamp + interval;
         auctions[id] = Auction({
             startPrice: price,
-            creator: msg.sender,
             interval: interval,
-            created: block.timestamp
+            discountRate: discountRate,
+            created: block.timestamp,
+            ended: endedTime
         });
     }
 
-    function bid(uint256 id, uint256 price) public payable{
-        require(nft.ownerOf(id) == address(this), "");
-        require(auctions[id].startPrice == 0, '');
-        require(price > bids[id].price, "");
-        
+    function buy(uint256 nftId) public payable {
+        require(auctions[nftId].startPrice > 0, "buy : The token is not registered in auction list.");
+        require(block.timestamp < auctions[nftId].ended, "buy : Auction is expired.");
+
+        uint256 price = getPrice(nftId);
+        require(msg.value > price, "buy : Pay greater or equal ETH than the price.");
+
+        nft.transferFrom(address(this), msg.sender, nftId);
     }
 
-    function sell(uint256 id) public {
-        
+    function getPrice(uint256 nftId) public view returns (uint256) {
+        uint timeElapsed = block.timestamp - auctions[nftId].created;
+        uint discount = discountRate * timeElapsed;
+        return auctions[nftId].startPrice - discount;
     }
 }
