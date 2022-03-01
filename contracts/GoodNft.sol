@@ -118,6 +118,7 @@ contract GoodNft is ERC721, Ownable{
 	function publicSale() public onlyOwner{
 		require(totalSupply < maxSupply, "Public Sale : Already all 10K NFTs are minted.");
 		require(mintStage == 4, "Public Sale : Mint stage has to set as public sale Stage.");
+		require(auctionAddress != address(0x0), "Public Sale : Auction contract address is not defined.");
 		for(uint256 i = totalSupply ; i < maxSupply ; i++)
 			_safeMint(auctionAddress, totalSupply+i);
 	}
@@ -126,7 +127,6 @@ contract GoodNft is ERC721, Ownable{
 		return (minter == star.ownerOf(id));
 	}
 
-	function whiteMint() public {}
 
 	function setMintStage(uint256 stage_) public onlyOwner {
 		require(stage_ < 4, "setMintStage : The stage can not be greater than 4.");
