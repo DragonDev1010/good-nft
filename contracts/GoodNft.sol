@@ -63,6 +63,7 @@ contract GoodNft is ERC721, Ownable{
 		require(mintStage == 1, "Admin Mint : Mint stage has to set as Admin Mint Stage.");
 		require(wallets.length == amounts.length, "Admin Mint : Wallet array has to be match amount array.");
 		for (uint256 i = 0 ; i < wallets.length ; i++) {
+			require(wallets[i] != address(0x0), "Admin Mint : Wallet address can not be zero.");
 			require(amounts[i] > 0, "Admin Mint : Mint amount has to be greater than zero.");
 			for (uint256 j = 0 ; j < amounts[i] ; j++) {
 				_safeMint(wallets[i], totalSupply+j);

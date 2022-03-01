@@ -17,8 +17,6 @@ contract DutchAuction is Ownable {
 
     mapping(uint256 => Auction) public auctions;
 
-    mapping(uint256 => HighestBid) public bids;
-
     constructor (address nftAddr_) {
         nft = IERC721(nftAddr_);
     }
@@ -47,7 +45,7 @@ contract DutchAuction is Ownable {
 
     function getPrice(uint256 nftId) public view returns (uint256) {
         uint timeElapsed = block.timestamp - auctions[nftId].created;
-        uint discount = discountRate * timeElapsed;
+        uint discount = auctions[nftId].discountRate * timeElapsed;
         return auctions[nftId].startPrice - discount;
     }
 }
