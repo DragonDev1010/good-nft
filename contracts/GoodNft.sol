@@ -28,7 +28,10 @@ contract GoodNft is ERC721, Ownable{
 	}
 
 	receive() external payable {}
-	
+	function withdrawAll() external onlyOwner{
+        uint256 amount = address(this).balance;
+        payable(owner()).transfer(amount);
+    }
 
 	function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
