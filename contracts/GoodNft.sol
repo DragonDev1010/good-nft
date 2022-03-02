@@ -14,8 +14,9 @@ contract GoodNft is ERC721, Ownable{
 	uint256 public presalePrice = 0.042 ether;
 	uint256 public maxSupply = 10000;
 	uint256 public totalSupply;
-	mapping(uint256 => uint256) starCompMap;
-	mapping(uint256 => bool) usedStar;
+
+	mapping(uint256 => uint256) public starCompMap;
+	mapping(uint256 => bool) public usedStar;
 
 	bytes32 private influencerRoot;
 
@@ -55,6 +56,7 @@ contract GoodNft is ERC721, Ownable{
 		for(uint256 i = 0 ; i < ids.length ; i++) {
 			_safeMint(msg.sender, totalSupply+i);
 			usedStar[ids[i]] = true;
+			starCompMap[ids[i]] = totalSupply+i;
 		}
 		totalSupply += ids.length;
 	}
@@ -84,23 +86,22 @@ contract GoodNft is ERC721, Ownable{
 	}
 
 	function whitelistMint(uint256 amount, bytes32[] memory proof, uint256 level) public payable {
+		require(verifyWhitelist(proof, level), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 1.");
 		require(amount > 0, "Whitelist Mint : Mint amount has to be greater than zero.");
 		require(totalSupply < maxSupply, "Whitelist Mint : Already all 10K NFTs are minted.");
 		require(mintStage == 3, "Whitelist Mint : Mint stage has to set as Whitelist Mint Stage.");
 
-		require(level > 0, "whitelistMint : Whitelist level has to be greater than zero.");
-		require(level < 4, "whitelistMint : Whitelist level is from 1 to 3.");
 		if(level == 1) {
 			require(amount == 1, "Whitelist Mint : Whitelist Level-1 can mint only 1 NFT.");	
 			require(msg.value == presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 1 NFT.");
-			require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 1.");
+			// require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 1.");
 			
 			_safeMint(msg.sender, totalSupply);
 			totalSupply = totalSupply + 1;
 		} else if (level == 2) {
 			require(amount == 2, "Whitelist Mint : Whitelist Level-2 can mint only 2 NFT.");
 			require(msg.value == 2 * presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 2 NFT.");
-			require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 2.");	
+			// require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 2.");	
 			
 			for (uint256 i = 0 ; i < 2 ; i++) 
 				_safeMint(msg.sender, totalSupply+i);
@@ -108,7 +109,7 @@ contract GoodNft is ERC721, Ownable{
 		} else {
 			require(amount == 3, "Whitelist Mint : Whitelist Level-3 can mint only 3 NFT.");
 			require(msg.value == 3 * presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 3 NFT.");
-			require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 3.");	
+			// require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 3.");	
 			
 			for (uint256 i = 0 ; i < 3 ; i++) 
 				_safeMint(msg.sender, totalSupply+i);
@@ -147,8 +148,8 @@ contract GoodNft is ERC721, Ownable{
 			whitelistRoot = root_;
 	}
 
-	function verifyWhitelist(bytes32[] memory proof) public view returns(bool) {
-		bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+	function verifyWhitelist(bytes32[] memory proof, uint256 lvl) public view returns(bool) {
+		bytes32 leaf = keccak256(abi.encodePacked(msg.sender, lvl));
 		return MerkleProof.verify(proof, whitelistRoot, leaf);
 	}
 
