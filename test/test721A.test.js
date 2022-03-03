@@ -71,4 +71,9 @@ contract('Test721A contract', (accounts) => {
         res = await testCon.getApproved(1)
         assert.equal(res, accounts[4], "get approved")
     })
+
+    it('get total supply', async() => {
+        res = await testCon.getTotalSupply()
+        assert.equal(res, 13, "get total supply")
+    })
 })
