@@ -6,8 +6,10 @@ require('chai')
     .should()
 const {assert} = require('chai')
 const MerkleCont = artifacts.require('./MerkleCont.sol')
+const NFT = artifacts.require('./GoodNft.sol')
 
 contract('merkle contract', (accounts) => {
+    let nftCont
     let merkleCont, whitelist, res, tree, leafNodes
     let lvl_1, lvl_2, lvl_3
     before(async() => {
@@ -15,6 +17,7 @@ contract('merkle contract', (accounts) => {
         lvl_2 = 2
         lvl_3 = 3
 
+        nftCont = await NFT.deployed()
         merkleCont = await MerkleCont.deployed()
         whitelist = [
             {"addr": accounts[0], "level": lvl_1},
@@ -32,6 +35,7 @@ contract('merkle contract', (accounts) => {
     it('set root', async() => {
         const root = tree.getRoot()
         await merkleCont.setRoot(root)
+        await nftCont.setWhitelistRoot(root)
     })
 
     it('verify', async() => {
@@ -60,13 +64,10 @@ contract('merkle contract', (accounts) => {
         console.log(res.logs[0].args)
     })
 
-    it('abi', async() => {
-        await merkleCont.test(1)
-        res = await merkleCont.abi_.call()
-        console.log(res.toString())
+    it('nft whitelist mint', async() => {
+        await nftCont.setMintStage(3)
+
+        let proof = tree.getHexProof(soliditySha3(accounts[0], lvl_1))
+        await nftCont.whitelistMint(1, proof, lvl_1, {value: web3.utils.toWei('0.042', 'ether')})
     })
 })
-
-// 0xd5e753f24d9e54ed71bad0ce39ebcdac02356d0d
-// 0xd5e753f24d9e54ed71bad0ce39ebcdac02356d0d
-// 0000000000000000000000000000000000000000000000000000000000000001

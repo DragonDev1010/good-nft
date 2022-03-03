@@ -42,10 +42,6 @@ contract GoodNft is ERC721, Ownable{
         baseURI = _newBaseURI;
     }
 
-	// function mint(uint256 tokenId) public {
-	// 	_safeMint(msg.sender, tokenId);
-	// }
-
 	function holderMint(uint256[] memory ids) public {
 		require(totalSupply < 2000, "holderMint : Already all 2000 NFTs were minted.");
 		require(mintStage == 0, "holderMint : Mint stage has to set as Holder Mint Stage.");
