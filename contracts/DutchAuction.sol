@@ -17,6 +17,8 @@ contract DutchAuction is Ownable {
 
     mapping(uint256 => Auction) public auctions;
 
+    uint256 public maxBuyAmount;
+
     constructor (address nftAddr_) {
         nft = IERC721(nftAddr_);
     }
@@ -43,9 +45,28 @@ contract DutchAuction is Ownable {
         nft.transferFrom(address(this), msg.sender, nftId);
     }
 
+    function batchBuy(uint256[] memory nftIds) public payable {
+        require(nftIds.length < maxBuyAmount, "batchBuy : It is exceed to maxBuyAmount.");
+        uint256 price;
+        for(uint256 i = 0 ; i < nftIds.length ; i++) {
+            require(auctions[nftIds[i]].startPrice > 0, "batchBuy : The token is not registered in auction list.");
+            require(block.timestamp < auctions[nftIds[i]].ended, "batchBuy : Auction is expired.");
+
+            price += getPrice(nftIds[i]);
+            require(msg.value > price, "buy : Pay greater or equal ETH than the price.");
+        }
+
+        for(uint256 j = 0 ; j < nftIds.length ; j++)
+            nft.transferFrom(address(this), msg.sender, nftIds[j]);
+    }
+
     function getPrice(uint256 nftId) public view returns (uint256) {
         uint timeElapsed = block.timestamp - auctions[nftId].created;
         uint discount = auctions[nftId].discountRate * timeElapsed;
         return auctions[nftId].startPrice - discount;
+    }
+
+    function setMaxBuyAmount(uint256 max_) public onlyOwner {
+        maxBuyAmount = max_;
     }
 }
