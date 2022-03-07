@@ -4,8 +4,10 @@ pragma solidity 0.8.6;
 import '@openzeppelin/contracts/token/ERC721/ERC721A.sol';
 import '@openzeppelin/contracts/access/Ownable.sol';
 import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 contract GoodNft is ERC721A, Ownable{
+	using SafeMath for uint256;
 	IERC721 star;
 	string public baseURI;
 
@@ -25,6 +27,9 @@ contract GoodNft is ERC721A, Ownable{
 	address public auctionAddress;
 
 	bool public pause = false;
+
+	uint256 public starting_index_block;
+	uint256 public starting_index;
 
 	modifier notPaused() {
 		require(pause == false, "Mint is paused.");
@@ -50,6 +55,7 @@ contract GoodNft is ERC721A, Ownable{
     }
 
 	function holderMint(uint256[] memory ids) public notPaused {
+		require(ids.length <= maxBatchSize, "holderMint : It is exceed to maxBatchSize.");
 		require(totalSupply < 2000, "holderMint : Already all 2000 NFTs were minted.");
 		require(mintStage == 0, "holderMint : Mint stage has to set as Holder Mint Stage.");
 		for(uint256 i = 0 ; i < ids.length ; i++) {
@@ -71,6 +77,7 @@ contract GoodNft is ERC721A, Ownable{
 		require(mintStage == 1, "Admin Mint : Mint stage has to set as Admin Mint Stage.");
 		require(wallets.length == amounts.length, "Admin Mint : Wallet array has to be match amount array.");
 		for (uint256 i = 0 ; i < wallets.length ; i++) {
+			require(amounts[i] <= maxBatchSize, "Admin Mint : It is exceed to maxBatchSize.");
 			require(wallets[i] != address(0x0), "Admin Mint : Wallet address can not be zero.");
 			require(amounts[i] > 0, "Admin Mint : Mint amount has to be greater than zero.");
 			
@@ -81,6 +88,7 @@ contract GoodNft is ERC721A, Ownable{
 	}
 
 	function influencerMint(uint256 amount, bytes32[] memory proof) public notPaused {
+		require(amount <= maxBatchSize, "Influencer Mint : It is exceed to maxBatchSize.");
 		require(amount > 0, "Influencer Mint : Mint amount has to be greater than zero.");
 		require(verifyInfluencer(proof), "Influencer Mint : Msg.sender is not registered as Influencer.");
 		require(totalSupply < 2200, "Influencer Mint : Influencer mint is 2100 ~ 2199 NFTs.");
@@ -91,34 +99,14 @@ contract GoodNft is ERC721A, Ownable{
 		totalSupply += amount;
 	}
 
-	function whitelistMint(uint256 amount, bytes32[] memory proof, uint256 level) public payable notPaused {
+	function whitelistMint(bytes32[] memory proof, uint256 level) public payable notPaused {
 		require(verifyWhitelist(proof, level), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 1.");
-		require(amount > 0, "Whitelist Mint : Mint amount has to be greater than zero.");
 		require(totalSupply < maxSupply, "Whitelist Mint : Already all 10K NFTs are minted.");
 		require(mintStage == 3, "Whitelist Mint : Mint stage has to set as Whitelist Mint Stage.");
+		require(msg.value == level * presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 2 NFT.");
 
-		if(level == 1) {
-			require(amount == 1, "Whitelist Mint : Whitelist Level-1 can mint only 1 NFT.");	
-			require(msg.value == presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 1 NFT.");
-			// require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 1.");
-			
-			_safeMint(msg.sender, 1);
-			totalSupply = totalSupply + 1;
-		} else if (level == 2) {
-			require(amount == 2, "Whitelist Mint : Whitelist Level-2 can mint only 2 NFT.");
-			require(msg.value == 2 * presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 2 NFT.");
-			// require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 2.");	
-			
-			_safeMint(msg.sender, 2);
-			totalSupply += 2;
-		} else {
-			require(amount == 3, "Whitelist Mint : Whitelist Level-3 can mint only 3 NFT.");
-			require(msg.value == 3 * presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 3 NFT.");
-			// require(verifyWhitelist(proof), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 3.");	
-			
-			_safeMint(msg.sender, 3);
-			totalSupply += 3;
-		}
+		_safeMint(msg.sender, level);
+		totalSupply = totalSupply + level;
 	}
 
 	function publicSale() public onlyOwner notPaused {
@@ -127,6 +115,11 @@ contract GoodNft is ERC721A, Ownable{
 		require(auctionAddress != address(0x0), "Public Sale : Auction contract address is not defined.");
 		
 		_safeMint(auctionAddress, maxSupply - totalSupply);
+		
+		if (starting_index_block == 0 && (totalSupply == maxSupply))
+		{
+			starting_index_block = block.number;
+		}
 	}
 
 	function _checkStarOwner(address minter, uint256 id) private view returns(bool) {
@@ -163,5 +156,29 @@ contract GoodNft is ERC721A, Ownable{
 
 	function setPause(bool pause_) public onlyOwner {
 		pause = pause_;
+	}
+
+	function finalizeStartingIndex() public
+	{
+		require(starting_index == 0, "Starting index already set");
+		require(starting_index_block != 0, "Starting index block not set");
+
+		starting_index = uint256(blockhash(starting_index_block)) % maxSupply;
+
+		if (block.number.sub(starting_index_block) > 255)
+		{
+			starting_index = uint256(blockhash(block.number-1)) % maxSupply;
+		}
+
+		if (starting_index == 0)
+		{
+			starting_index = starting_index.add(1);
+		}
+	}
+
+	function emergencySetStartingIndexBlock() public onlyOwner
+	{
+		require(starting_index == 0, "Starting index is already set");
+		starting_index_block = block.number;
 	}
 }
