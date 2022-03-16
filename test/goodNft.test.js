@@ -3,11 +3,13 @@ require('chai')
     .should()
 
 const {assert} = require('chai')
-const { MerkleTree } = require('./Merkle/merkleTree.js');
-const {Server} = require('./HoldToken/server.js')
+// const { MerkleTree } = require('./Merkle/merkleTree.js');
+// const {Server} = require('./HoldToken/server.js')
 const NFT = artifacts.require('./GoodNft.sol')
+const starOwnersById = require('./HoldToken/wallets.json')
+
 contract('NFT contract', (accounts) => {
-    let res
+    let res, gasEstimate
     let nft
     let adminMintWallets = [accounts[1], accounts[2], accounts[3]]
     let adminMintAmounts = [3, 4, 5]
@@ -15,8 +17,50 @@ contract('NFT contract', (accounts) => {
     let starHolder_1 = "0x8090dd2831092d07c013e8252cd7a19f9149e2ea"
     let starHolder_2 = "0xa784779bd895b2db4c0009a7468f090012e12ff9"
     let starHolder_3 = "0x7c2845d6b48cb2feb76532558e2033c145745e35"
+
+    let ownedStar_1 = []
+    let ownedStar_2 = []
+    let ownedStar_3 = []
+
+    function spliteChunk(ids) {
+        let chunkArray = []
+        let i,j, chunk = 35;
+        let temporary = []
+        for (i = 0,j = ids.length; i < j; i += chunk) {
+            temporary = ids.slice(i, i + chunk);
+            chunkArray.push(temporary)
+        }
+        return chunkArray
+    }
+
     before(async() => {
         nft = await NFT.deployed()
+        
+        for(let i = 0 ; i < 2000 ; i++) {
+            if(starOwnersById[i].wallet_address.toLowerCase() == starHolder_1.toLowerCase()) {
+                ownedStar_1.push(i)
+            }
+
+            if(starOwnersById[i].wallet_address.toLowerCase() == starHolder_2.toLowerCase()) {
+                ownedStar_2.push(i)
+            }
+
+            if(starOwnersById[i].wallet_address.toLowerCase() == starHolder_3.toLowerCase()) {
+                ownedStar_3.push(i)
+            }
+        }
+
+    })
+
+    it('Holder mint', async() => {
+        let chunk = []
+        chunk = spliteChunk(ownedStar_1)
+
+        for(let i = 0 ; i < chunk.length ; i++) {
+            gasEstimate = await nft.holderMint.estimateGas(chunk[i], {from: starHolder_1})
+            console.log(gasEstimate)
+            await nft.holderMint(chunk[i], {from: starHolder_1})
+        }
     })
 
     // it('Admin mint', async() => {
@@ -58,12 +102,6 @@ contract('NFT contract', (accounts) => {
     //     res = await nft.balanceOf(adminMintWallets[2])
     //     assert.equal(res, adminMintAmounts[2])
     // })
-
-    it('Holder mint', async() => {
-        // res = await nft._checkStarOwner(starHolder_1, 961)
-        // console.log(res)
-        await nft.holderMint([961, 960, 959, 958], {from: starHolder_1})
-    })
 
     // it('set base uri', async() => {
     //     await nft.setBaseURI("https://baseuri/")

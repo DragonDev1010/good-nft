@@ -17,6 +17,10 @@ contract GoodNft is ERC721A, Ownable{
 	uint256 public maxSupply = 10000;
 	uint256 public totalSupply;
 
+	uint256 public maxHolderMint = 2000;
+	uint256 public maxAdminMint = 100;
+	uint256 public maxInfluencerMint = 100;
+
 	mapping(uint256 => uint256) public starCompMap;
 	mapping(uint256 => bool) public usedStar;
 
@@ -36,8 +40,8 @@ contract GoodNft is ERC721A, Ownable{
 		_;
 	}
 
-	constructor(string memory name, string memory symbol, address starAddr) ERC721A(name, symbol) {
-		star = IERC721(starAddr);
+	constructor(string memory name, string memory symbol) ERC721A(name, symbol) {
+		
 	}
 
 	receive() external payable {}
@@ -45,6 +49,10 @@ contract GoodNft is ERC721A, Ownable{
         uint256 amount = address(this).balance;
         payable(owner()).transfer(amount);
     }
+
+	function getStarContract(address starAddr) public onlyOwner {
+		star = IERC721(starAddr);
+	}
 
 	function _baseURI() internal view virtual override returns (string memory) {
         return baseURI;
@@ -56,7 +64,7 @@ contract GoodNft is ERC721A, Ownable{
 
 	function holderMint(uint256[] memory ids) public notPaused {
 		require(ids.length <= maxBatchSize, "holderMint : It is exceed to maxBatchSize.");
-		require(totalSupply < 2000, "holderMint : Already all 2000 NFTs were minted.");
+		// require(totalSupply < maxHolderMint, "holderMint : Already all 2000 NFTs were minted.");
 		require(mintStage == 0, "holderMint : Mint stage has to set as Holder Mint Stage.");
 		for(uint256 i = 0 ; i < ids.length ; i++) {
 			require(_checkStarOwner(msg.sender, ids[i]), "holderMint : Only own $STAR can be used to mint.");
@@ -73,7 +81,7 @@ contract GoodNft is ERC721A, Ownable{
 	}
 
 	function adminMint(address[] memory wallets, uint256[] memory amounts) public onlyOwner notPaused {
-		require(totalSupply < 2100, "Admin Mint : Admin mint is 2000 ~ 2099 NFTs.");
+		// require(totalSupply < maxHolderMint, "Admin Mint : Admin mint is 2000 ~ 2099 NFTs.");
 		require(mintStage == 1, "Admin Mint : Mint stage has to set as Admin Mint Stage.");
 		require(wallets.length == amounts.length, "Admin Mint : Wallet array has to be match amount array.");
 		for (uint256 i = 0 ; i < wallets.length ; i++) {
@@ -91,7 +99,7 @@ contract GoodNft is ERC721A, Ownable{
 		require(amount <= maxBatchSize, "Influencer Mint : It is exceed to maxBatchSize.");
 		require(amount > 0, "Influencer Mint : Mint amount has to be greater than zero.");
 		require(verifyInfluencer(proof), "Influencer Mint : Msg.sender is not registered as Influencer.");
-		require(totalSupply < 2200, "Influencer Mint : Influencer mint is 2100 ~ 2199 NFTs.");
+		// require(totalSupply < 2200, "Influencer Mint : Influencer mint is 2100 ~ 2199 NFTs.");
 		require(mintStage == 2, "Influencer Mint : Mint stage has to set as Influencer Mint Stage.");
 			
 		_safeMint(msg.sender, amount);
@@ -101,7 +109,7 @@ contract GoodNft is ERC721A, Ownable{
 
 	function whitelistMint(bytes32[] memory proof, uint256 level) public payable notPaused {
 		require(verifyWhitelist(proof, level), "Whitelist Mint : Msg.sender is not registered as Whitelist Level - 1.");
-		require(totalSupply < maxSupply, "Whitelist Mint : Already all 10K NFTs are minted.");
+		// require(totalSupply < maxSupply, "Whitelist Mint : Already all 10K NFTs are minted.");
 		require(mintStage == 3, "Whitelist Mint : Mint stage has to set as Whitelist Mint Stage.");
 		require(msg.value == level * presalePrice, "Whitelist Mint : One NFT is 0.042 ETH. Please send correct value for 2 NFT.");
 
@@ -110,7 +118,7 @@ contract GoodNft is ERC721A, Ownable{
 	}
 
 	function publicSale() public onlyOwner notPaused {
-		require(totalSupply < maxSupply, "Public Sale : Already all 10K NFTs are minted.");
+		// require(totalSupply < maxSupply, "Public Sale : Already all 10K NFTs are minted.");
 		require(mintStage == 4, "Public Sale : Mint stage has to set as public sale Stage.");
 		require(auctionAddress != address(0x0), "Public Sale : Auction contract address is not defined.");
 		
@@ -158,8 +166,7 @@ contract GoodNft is ERC721A, Ownable{
 		pause = pause_;
 	}
 
-	function finalizeStartingIndex() public
-	{
+	function finalizeStartingIndex() public {
 		require(starting_index == 0, "Starting index already set");
 		require(starting_index_block != 0, "Starting index block not set");
 
@@ -176,8 +183,7 @@ contract GoodNft is ERC721A, Ownable{
 		}
 	}
 
-	function emergencySetStartingIndexBlock() public onlyOwner
-	{
+	function emergencySetStartingIndexBlock() public onlyOwner {
 		require(starting_index == 0, "Starting index is already set");
 		starting_index_block = block.number;
 	}
