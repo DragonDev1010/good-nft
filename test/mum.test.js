@@ -72,8 +72,12 @@ contract('Comp NFT', (accounts) => {
     })
 
     it('admin mint', async() => {
+        let gasEstimate = await comp.adminMint.estimateGas(35, {from: admin})
+        console.log("Estimated gas for admin mint for 35 NFTs: ", gasEstimate)
         await comp.adminMint(35, {from: admin})
-        await comp.adminMint(35, {from: admin})
+        gasEstimate = await comp.adminMint.estimateGas(1, {from: admin})
+        console.log("Estimated gas for admin mint 1 NFT: ", gasEstimate)
+        await comp.adminMint(1, {from: admin})
         await comp.adminMint(30, {from: admin})
     })
 

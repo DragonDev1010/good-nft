@@ -17,8 +17,8 @@ contract Mum is ERC721A, Ownable{
     uint256 public maxSupply = 10000;
     uint256 public maxBatchAmount = 35;
 
-    // holder, admin, influencer, whitelist, public
-    bool[4] public mintPaused = [false, false, false, false];
+    // holder, influencer/whitelist, public
+    bool[4] public mintPaused = [false, false, false];
 
     uint256 public holderMintedAmount;
     mapping(uint256 => bool) public usedStarIds;
@@ -30,6 +30,8 @@ contract Mum is ERC721A, Ownable{
     bytes32 private influencerRoot;
     uint256 public maxInfluencerMintAmount = 100;
     uint256 public influencerMinteAmount;
+
+    uint256 public maxAdminMintAmount = 400;
 
     bytes32 private whitelistRoot;
     uint256 public whitelistPrice = 0.042 ether;
@@ -98,25 +100,37 @@ contract Mum is ERC721A, Ownable{
         require( amount <= maxBatchAmount, "Can not mint more than 35 NFTs per one transaction.");
 
         uint256 estimated = adminMintedAmount.add(amount);
-        require( estimated <= 100, "If you mint anymore, Admin_Mint_NFT is exceed to 100 NFTs.");
+        require( estimated <= maxAdminMintAmount, "If you mint anymore, Admin_Mint_NFT is exceed to 100 NFTs.");
         _safeMint(msg.sender, amount);
         adminMintedAmount += amount;
     }
 
-    function influencerMint(uint256 amount, bytes32[] memory proof) public emergencyPause {
+    // function influencerMint__(uint256 amount, bytes32[] memory proof) public emergencyPause onlyOwner {
+    //     require(!mintPaused[1], "Influencer Mint is paused.");
+    //     uint256 estimatedAmount = influencerMinteAmount + amount;
+    //     require(estimatedAmount <= maxInfluencerMintAmount, "Influencers already minted 100 NFTs.");
+    //     require(amount < maxBatchAmount, "Can mint at most 35 NFTs in one transaction");
+    //     require(_verifyInfluencer(proof), "Msg.sender is not registered as Influencer.");
+
+    //     _safeMint(msg.sender, amount);
+
+    //     influencerMinteAmount += amount;
+    // }
+
+    function influencerMint (address[] wallets, uint256[] amounts) public emergencyPause onlyOwner {
         require(!mintPaused[1], "Influencer Mint is paused.");
-        uint256 estimatedAmount = influencerMinteAmount + amount;
-        require(estimatedAmount <= maxInfluencerMintAmount, "Influencers already minted 100 NFTs.");
-        require(amount < maxBatchAmount, "Can mint at most 35 NFTs in one transaction");
-        require(_verifyInfluencer(proof), "Msg.sender is not registered as Influencer.");
-
-        _safeMint(msg.sender, amount);
-
-        influencerMinteAmount += amount;
+        require(wallets.length == amounts.length, "wallets not match to amounts.");
+        for ( uint256 i = 0 ; i < wallets.length ; i++ ) {
+            require(amounts[i] <= maxBatchAmount, "Can not mint more than maxBatchAmount.");
+        }
+        for ( uint256 i = 0 ; i < wallets.length ; i++ ) {
+            _safeMint(wallets[i], amounts[i]);
+            influencerMinteAmount += amounts[i];
+        }
     }
 
     function whitelistMint(bytes32[] memory proof, uint256 level) public payable emergencyPause {
-        require(!mintPaused[2], "Whitelist Mint is paused.");
+        require(!mintPaused[1], "Whitelist Mint is paused.");
         require(verifyWhitelist(proof, level), "Whitelist Mint : You are not allowed in whitelist mint.");
         uint256 cost = level.mul(whitelistPrice);
         require(msg.value == cost, "Whitelist Mint : Not enough fund approved. One NFT is 0.042 ETH.");
@@ -126,7 +140,7 @@ contract Mum is ERC721A, Ownable{
     }
 
     function publicSaleMint(uint256 amount) public payable emergencyPause {
-        require(!mintPaused[3], "Public sale is paused.");
+        require(!mintPaused[2], "Public sale is paused.");
         require(publicPrice > 0, "Public sale price is not yet defined");
         uint256 estimatedTotal = getTotalMinted().add(amount);
         require( estimatedTotal <= maxSupply, "All 10000 NFTs are already minted or amount is too many.");
@@ -140,14 +154,14 @@ contract Mum is ERC721A, Ownable{
         publicPrice = price;
     }
 
-    function setInfluenceRoot(bytes32 root_) public onlyOwner {
-		influencerRoot = root_;
-	}
+    // function setInfluenceRoot(bytes32 root_) public onlyOwner {
+	// 	influencerRoot = root_;
+	// }
 
-	function _verifyInfluencer(bytes32[] memory proof) private view returns(bool) {
-		bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
-		return MerkleProof.verify(proof, influencerRoot, leaf);
-	}
+	// function _verifyInfluencer(bytes32[] memory proof) private view returns(bool) {
+	// 	bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+	// 	return MerkleProof.verify(proof, influencerRoot, leaf);
+	// }
 
     function setWhitelistRoot(bytes32 root_) public onlyOwner {
 			whitelistRoot = root_;
