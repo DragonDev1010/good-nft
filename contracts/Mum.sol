@@ -117,7 +117,7 @@ contract Mum is ERC721A, Ownable{
     //     influencerMinteAmount += amount;
     // }
 
-    function influencerMint (address[] wallets, uint256[] amounts) public emergencyPause onlyOwner {
+    function influencerMint (address[] memory wallets, uint256[] memory amounts) public emergencyPause onlyOwner {
         require(!mintPaused[1], "Influencer Mint is paused.");
         require(wallets.length == amounts.length, "wallets not match to amounts.");
         for ( uint256 i = 0 ; i < wallets.length ; i++ ) {

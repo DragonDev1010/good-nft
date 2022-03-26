@@ -81,14 +81,10 @@ contract('Comp NFT', (accounts) => {
         await comp.adminMint(30, {from: admin})
     })
 
-    it('set influencer merkle tree', async() => {
-        let influencerTreeRoot = influencerMerkle.getRoot()
-        await comp.setInfluenceRoot(influencerTreeRoot, {from: admin})
-    })
-
     it('influencer mint', async() => {
-        let proof = influencerMerkle.getHexProof(keccak256(influencers[0]))
-        await comp.influencerMint(3, proof, {from: influencers[0]})
+        let gasEstimate = await comp.influencerMint.estimateGas([accounts[0], accounts[1], accounts[2]], [30, 20, 10], {from: admin})
+        console.log("Influencer Mint Gas: ", gasEstimate)
+        await comp.influencerMint([accounts[0], accounts[1], accounts[2]], [30, 20, 10], {from: admin})
     })
 
     it('set whitelist merkle tree', async() => {
