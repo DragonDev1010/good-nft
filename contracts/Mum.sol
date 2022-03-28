@@ -36,6 +36,7 @@ contract Mum is ERC721A, Ownable{
     bytes32 private whitelistRoot;
     uint256 public whitelistPrice = 0.042 ether;
     uint256 public whitelistMintedAmount;
+    mapping(address => bool) public mintedWhitelist;
 
     uint256 public publicSoldAmount;
     uint256 public publicPrice;
@@ -130,6 +131,7 @@ contract Mum is ERC721A, Ownable{
     }
 
     function whitelistMint(bytes32[] memory proof, uint256 level) public payable emergencyPause {
+        require(mintedWhitelist[msg.sender] == false, "Can not mint duplicately");
         require(!mintPaused[1], "Whitelist Mint is paused.");
         require(verifyWhitelist(proof, level), "Whitelist Mint : You are not allowed in whitelist mint.");
         uint256 cost = level.mul(whitelistPrice);
@@ -137,6 +139,7 @@ contract Mum is ERC721A, Ownable{
 
         _safeMint(msg.sender, level);
         whitelistMintedAmount += level;
+        mintedWhitelist[msg.sender] = true;
     }
 
     function publicSaleMint(uint256 amount) public payable emergencyPause {
