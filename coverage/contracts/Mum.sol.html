@@ -1,0 +1,593 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <title>Code coverage report for contracts/Mum.sol</title>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style type='text/css'>
+        .coverage-summary .sorter {
+            background-image: url(../sort-arrow-sprite.png);
+        }
+    </style>
+</head>
+<body>
+<div class='wrapper'>
+  <div class='pad1'>
+    <h1>
+      <a href="../index.html">all files</a> / <a href="index.html">contracts/</a> Mum.sol
+    </h1>
+    <div class='clearfix'>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Statements</span>
+        <span class='fraction'>0/51</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Branches</span>
+        <span class='fraction'>0/36</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Functions</span>
+        <span class='fraction'>0/17</span>
+      </div>
+      <div class='fl pad1y space-right2'>
+        <span class="strong">0% </span>
+        <span class="quiet">Lines</span>
+        <span class='fraction'>0/52</span>
+      </div>
+    </div>
+  </div>
+  <div class='status-line low'></div>
+<pre><table class="coverage">
+<tr><td class="line-count quiet">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
+52
+53
+54
+55
+56
+57
+58
+59
+60
+61
+62
+63
+64
+65
+66
+67
+68
+69
+70
+71
+72
+73
+74
+75
+76
+77
+78
+79
+80
+81
+82
+83
+84
+85
+86
+87
+88
+89
+90
+91
+92
+93
+94
+95
+96
+97
+98
+99
+100
+101
+102
+103
+104
+105
+106
+107
+108
+109
+110
+111
+112
+113
+114
+115
+116
+117
+118
+119
+120
+121
+122
+123
+124
+125
+126
+127
+128
+129
+130
+131
+132
+133
+134
+135
+136
+137
+138
+139
+140
+141
+142
+143
+144
+145
+146
+147
+148
+149
+150
+151
+152
+153
+154
+155
+156
+157
+158
+159
+160
+161
+162
+163
+164
+165
+166
+167
+168
+169
+170
+171
+172
+173
+174
+175
+176
+177</td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">// SPDX-License-Identifier: MIT
+pragma solidity 0.8.6;
+&nbsp;
+import './ERC721A.sol';
+import '@openzeppelin/contracts/access/Ownable.sol';
+import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+&nbsp;
+contract Mum is ERC721A, Ownable{
+    using SafeMath for uint256;
+&nbsp;
+    IERC721 starContract;
+&nbsp;
+    string public baseURI;
+    bool public paused;
+&nbsp;
+    uint256 public maxSupply = 10000;
+    uint256 public maxBatchAmount = 35;
+&nbsp;
+    // holder, influencer/whitelist, public
+    bool[4] public mintPaused = [false, false, false];
+&nbsp;
+    uint256 public holderMintedAmount;
+    mapping(uint256 =&gt; bool) public usedStarIds;
+    mapping(uint256 =&gt; uint256) public matchStarComp;
+&nbsp;
+    uint256 public adminMintedAmount;
+&nbsp;
+&nbsp;
+    bytes32 private influencerRoot;
+    uint256 public maxInfluencerMintAmount = 100;
+    uint256 public influencerMinteAmount;
+&nbsp;
+    uint256 public maxAdminMintAmount = 400;
+&nbsp;
+    bytes32 private whitelistRoot;
+    uint256 public whitelistPrice = 0.042 ether;
+    uint256 public whitelistMintedAmount;
+    mapping(address =&gt; bool) public mintedWhitelist;
+&nbsp;
+    uint256 public publicSoldAmount;
+    uint256 public publicPrice;
+&nbsp;
+<span class="fstat-no" title="function not covered" >    constructor(string memory name, string memory symbol) ERC721A(name, symbol) {}</span>
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function setPaused(bool s_) public onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >        paused = s_</span>;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    modifier emergencyPause {</span>
+<span class="cstat-no" title="statement not covered" >        require(!paused, "Emergency Pause")</span>;
+        _;
+    }
+&nbsp;
+    receive() external payable {}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function withdrawAll() external onlyOwner{</span>
+<span class="cstat-no" title="statement not covered" >        uint256 amount = address(this).balance;</span>
+<span class="cstat-no" title="statement not covered" >        payable(owner()).transfer(amount)</span>;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function _baseURI() internal view virtual override returns (string memory) {</span>
+<span class="cstat-no" title="statement not covered" >        return baseURI;</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function getStarContract(address addr_) public onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >        starContract = IERC721(addr_)</span>;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function setBaseURI(string memory _newBaseURI) public onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >        baseURI = _newBaseURI</span>;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function setMintPaused(uint256 stage, bool s) public onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >        mintPaused[stage] = s</span>;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function getTotalMinted() public view returns (uint256) {</span>
+<span class="cstat-no" title="statement not covered" >        return holderMintedAmount.add(adminMintedAmount).add(influencerMinteAmount).add(whitelistMintedAmount).add(publicSoldAmount);</span>
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function holderMint(uint256[] memory ids) public emergencyPause {</span>
+<span class="cstat-no" title="statement not covered" >        require(!mintPaused[0], "Holder Mint is paused.")</span>;
+<span class="cstat-no" title="statement not covered" >        require( ids.length &lt;= maxBatchAmount, "holderMint : You can not mint more than 35 NFTs in one transaction." )</span>;
+<span class="cstat-no" title="statement not covered" >        for ( uint256 i = 0 ; i &lt; ids.length ; i++ ) {</span>
+<span class="cstat-no" title="statement not covered" >            require( starContract.ownerOf(ids[i]) == msg.sender, "holderMint : You are not owner of this $STAR tokens.")</span>;
+<span class="cstat-no" title="statement not covered" >            require( !usedStarIds[ids[i]], "holderMint : Some of $STAR tokens already used to mint new NFTs.")</span>;
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        _safeMint(msg.sender, ids.length)</span>;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        for ( uint256 i = 0 ; i &lt; ids.length ; i++ ) {</span>
+<span class="cstat-no" title="statement not covered" >            usedStarIds[ ids[i] ] = true</span>;
+<span class="cstat-no" title="statement not covered" >            matchStarComp[ ids[i] ] = holderMintedAmount + i</span>;
+        }
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        holderMintedAmount += ids.length</span>;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function adminMint(uint256 amount) public emergencyPause onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >        require( amount &lt;= maxBatchAmount, "Can not mint more than 35 NFTs per one transaction.")</span>;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        uint256 estimated = adminMintedAmount.add(amount);</span>
+<span class="cstat-no" title="statement not covered" >        require( estimated &lt;= maxAdminMintAmount, "If you mint anymore, Admin_Mint_NFT is exceed to 100 NFTs.")</span>;
+<span class="cstat-no" title="statement not covered" >        _safeMint(msg.sender, amount)</span>;
+<span class="cstat-no" title="statement not covered" >        adminMintedAmount += amount</span>;
+    }
+&nbsp;
+    // function influencerMint__(uint256 amount, bytes32[] memory proof) public emergencyPause onlyOwner {
+    //     require(!mintPaused[1], "Influencer Mint is paused.");
+    //     uint256 estimatedAmount = influencerMinteAmount + amount;
+    //     require(estimatedAmount &lt;= maxInfluencerMintAmount, "Influencers already minted 100 NFTs.");
+    //     require(amount &lt; maxBatchAmount, "Can mint at most 35 NFTs in one transaction");
+    //     require(_verifyInfluencer(proof), "Msg.sender is not registered as Influencer.");
+&nbsp;
+    //     _safeMint(msg.sender, amount);
+&nbsp;
+    //     influencerMinteAmount += amount;
+    // }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function influencerMint (address[] memory wallets, uint256[] memory amounts) public emergencyPause onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >        require(!mintPaused[1], "Influencer Mint is paused.")</span>;
+<span class="cstat-no" title="statement not covered" >        require(wallets.length == amounts.length, "wallets not match to amounts.")</span>;
+<span class="cstat-no" title="statement not covered" >        for ( uint256 i = 0 ; i &lt; wallets.length ; i++ ) {</span>
+<span class="cstat-no" title="statement not covered" >            require(amounts[i] &lt;= maxBatchAmount, "Can not mint more than maxBatchAmount.")</span>;
+        }
+<span class="cstat-no" title="statement not covered" >        for ( uint256 i = 0 ; i &lt; wallets.length ; i++ ) {</span>
+<span class="cstat-no" title="statement not covered" >            _safeMint(wallets[i], amounts[i])</span>;
+<span class="cstat-no" title="statement not covered" >            influencerMinteAmount += amounts[i]</span>;
+        }
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function whitelistMint(bytes32[] memory proof, uint256 level) public payable emergencyPause {</span>
+<span class="cstat-no" title="statement not covered" >        require(mintedWhitelist[msg.sender] == false, "Can not mint duplicately")</span>;
+<span class="cstat-no" title="statement not covered" >        require(!mintPaused[1], "Whitelist Mint is paused.")</span>;
+<span class="cstat-no" title="statement not covered" >        require(verifyWhitelist(proof, level), "Whitelist Mint : You are not allowed in whitelist mint.")</span>;
+<span class="cstat-no" title="statement not covered" >        uint256 cost = level.mul(whitelistPrice);</span>
+<span class="cstat-no" title="statement not covered" >        require(msg.value == cost, "Whitelist Mint : Not enough fund approved. One NFT is 0.042 ETH.")</span>;
+&nbsp;
+<span class="cstat-no" title="statement not covered" >        _safeMint(msg.sender, level)</span>;
+<span class="cstat-no" title="statement not covered" >        whitelistMintedAmount += level</span>;
+<span class="cstat-no" title="statement not covered" >        mintedWhitelist[msg.sender] = true</span>;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function publicSaleMint(uint256 amount) public payable emergencyPause {</span>
+<span class="cstat-no" title="statement not covered" >        require(!mintPaused[2], "Public sale is paused.")</span>;
+<span class="cstat-no" title="statement not covered" >        require(publicPrice &gt; 0, "Public sale price is not yet defined")</span>;
+<span class="cstat-no" title="statement not covered" >        uint256 estimatedTotal = getTotalMinted().add(amount);</span>
+<span class="cstat-no" title="statement not covered" >        require( estimatedTotal &lt;= maxSupply, "All 10000 NFTs are already minted or amount is too many.")</span>;
+<span class="cstat-no" title="statement not covered" >        uint256 cost = publicPrice.mul(amount);</span>
+<span class="cstat-no" title="statement not covered" >        require( msg.value == cost, "Not enough found.")</span>;
+<span class="cstat-no" title="statement not covered" >        _safeMint(msg.sender, amount)</span>;
+<span class="cstat-no" title="statement not covered" >        publicSoldAmount += amount</span>;
+    }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function setPriceForRemaining (uint256 price) public onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >        publicPrice = price</span>;
+    }
+&nbsp;
+    // function setInfluenceRoot(bytes32 root_) public onlyOwner {
+	// 	influencerRoot = root_;
+	// }
+&nbsp;
+	// function _verifyInfluencer(bytes32[] memory proof) private view returns(bool) {
+	// 	bytes32 leaf = keccak256(abi.encodePacked(msg.sender));
+	// 	return MerkleProof.verify(proof, influencerRoot, leaf);
+	// }
+&nbsp;
+<span class="fstat-no" title="function not covered" >    function setWhitelistRoot(bytes32 root_) public onlyOwner {</span>
+<span class="cstat-no" title="statement not covered" >			whitelistRoot = root_</span>;
+	}
+&nbsp;
+<span class="fstat-no" title="function not covered" >	function verifyWhitelist(bytes32[] memory proof, uint256 lvl) public view returns(bool) {</span>
+<span class="cstat-no" title="statement not covered" >		bytes32 leaf = keccak256(abi.encodePacked(msg.sender, lvl));</span>
+<span class="cstat-no" title="statement not covered" >		return MerkleProof.verify(proof, whitelistRoot, leaf);</span>
+	}
+}</pre></td></tr>
+</table></pre>
+<div class='push'></div><!-- for sticky footer -->
+</div><!-- /wrapper -->
+<div class='footer quiet pad2 space-top1 center small'>
+  Code coverage
+  generated by <a href="http://istanbul-js.org/" target="_blank">istanbul</a> at Thu Mar 31 2022 01:01:54 GMT+0800 (Ulaanbaatar Standard Time)
+</div>
+</div>
+<script src="../prettify.js"></script>
+<script>
+window.onload = function () {
+        if (typeof prettyPrint === 'function') {
+            prettyPrint();
+        }
+};
+</script>
+<script src="../sorter.js"></script>
+</body>
+</html>

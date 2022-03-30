@@ -20,6 +20,7 @@
     "fs": "0.0.1-security",
     "keccak256": "^1.0.6",
     "merkletreejs": "^0.2.30",
+    "solidity-coverage": "^0.7.20",
     "web3-utils": "^1.7.0",
     "zeppelin-solidity": "^1.12.0"
   }

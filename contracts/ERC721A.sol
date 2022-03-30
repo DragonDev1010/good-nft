@@ -22,7 +22,7 @@ contract ERC721A is Context, ERC165, IERC721, IERC721Metadata {
 
 
     uint256 private currentIndex = 0;
-    uint256 public maxBatchSize = 35;
+    uint256 public maxBatchSize = 400;
 
     // Token name
     string private _name;
@@ -281,6 +281,7 @@ contract ERC721A is Context, ERC165, IERC721, IERC721Metadata {
         uint256 startTokenId = currentIndex;
         require(to != address(0), "ERC721A: mint to the zero address");
         require(!_exists(startTokenId), "ERC721A: token already minted");
+        require(quantity <= maxBatchSize, "Can not greater than maxBatchSize");
 
         _beforeTokenTransfers(address(0), to, startTokenId, quantity);
 
